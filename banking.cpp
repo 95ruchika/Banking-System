@@ -1,258 +1,214 @@
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
+#include <string>
 #include <vector>
-#include <map>
 using namespace std;
-#define MIN_BALANCE 500
-class InsufficientFunds
+
+int increment = 0;
+
+class Account 
 {
-};
-class Account
-{
-private:
-    long accountNumber;
+public:
+    int numberAccount = 1000000;
     string firstName;
     string lastName;
-    float balance;
-    static long NextAccountNumber;
+    string age;
+    string typeAccount;
+    int firstDeposit;
 
-public:
-    Account() {}
-    Account(string fname, string lname, float balance);
-    long getAccNo() { return accountNumber; }
-    string getFirstName() { return firstName; }
-    string getLastName() { return lastName; }
-    float getBalance() { return balance; }
-    void Deposit(float amount);
-    void Withdraw(float amount);
-    static void setLastAccountNumber(long accountNumber);
-    static long getLastAccountNumber();
-    friend ofstream &operator<<(ofstream &ofs, Account &acc);
-    friend ifstream &operator>>(ifstream &ifs, Account &acc);
-    friend ostream &operator<<(ostream &os, Account &acc);
+    Account()
+    {
+        numberAccount = numberAccount + increment;
+    }
 };
-long Account::NextAccountNumber = 0;
-class Bank
-{
-private:
-    map<long, Account> accounts;
 
-public:
-    Bank();
-    Account OpenAccount(string fname, string lname, float balance);
-    Account BalanceEnquiry(long accountNumber);
-    Account Deposit(long accountNumber, float amount);
-    Account Withdraw(long accountNumber, float amount);
-    void CloseAccount(long accountNumber);
-    void ShowAllAccounts();
-    ~Bank();
+vector<Account> vectorAccount;
+
+struct Bank 
+{ 
+    void showMenu() {
+        cout << "            MENU              " << endl;
+        cout << "  ------------------------" << endl;
+        cout << "   Open New Account (1) " << endl;
+        cout << "   Deposit Money    (2) " << endl;
+        cout << "   WithDraw Money   (3) " << endl;
+        cout << "   Display Account  (4) " << endl;
+        cout << "   Exit             (5) " << endl;
+        cout << "  ------------------------";
+    }
+
+    void openAccount()
+    {
+
+        cout << "  ------------------------" << endl;
+        cout << "  |   Creating Account   |" << endl;
+        cout << "  ------------------------" << endl << endl;
+
+        int accountInt;
+
+        Account account;
+
+        cout << "  * Enter Your First Name : " << endl;
+        cin >> account.firstName;
+        cin.clear();
+
+        cout << "  * Enter Your Last Name : " << endl;
+        cin >> account.lastName;
+        cin.clear();
+
+        cout << "  * Enter Your Age : " << endl;
+        cin >> account.age;
+        cin.clear();
+
+        int accountType; 
+        do {
+            cout << "  * Enter Account type (1) Checking Account, (2) Saving Account : " << endl;
+            cin >> accountType;
+            cin.clear();
+        } while (accountType != 1 && accountType != 2);
+
+        if (accountType == 1)
+        {
+            account.typeAccount = "Checking Account";
+        }
+
+        else
+        {
+            account.typeAccount = "Saving Account";
+        }
+        
+        cout << "  * Enter Amount Of First Deposit : " << endl;
+        cin >> account.firstDeposit;
+        cin.clear();
+
+        cout << endl << "  Account Created!" << endl << endl;
+     
+        increment++;
+
+        vectorAccount.push_back(account);
+    }
+
+    void depositMoney() 
+    {
+        if (vectorAccount.size() == 0)
+        {
+            cout << "No Account Created." << endl << endl;
+                return;
+        }
+
+        cout << "  ------------------------" << endl;
+        cout << "  |    Deposit Portal    |" << endl;
+        cout << "  ------------------------" << endl << endl;
+
+        int numberAccount;
+        int depo;
+
+        cout << "Account Number To Deposit : ";
+        cin >> numberAccount;
+        cin.clear();
+
+        cout << "Amount To Deposit : ";
+        cin >> depo;
+        cin.clear();
+
+        for (int i = 0; i < vectorAccount.size(); i++)
+        {
+            if (vectorAccount[i].numberAccount == numberAccount)
+            {
+                vectorAccount[i].firstDeposit = vectorAccount[i].firstDeposit + depo;
+            }
+        }
+
+        cout << "Succesfully Deposit!";
+        cout << endl << endl;
+    }
+
+    void displayAccount()
+    {
+        if (vectorAccount.size() == 0)
+        {
+            cout << "No Account Created." << endl << endl;
+                return;
+        }
+
+        cout << "  ------------------------" << endl;
+        cout << "  |   Display Account    |" << endl;
+        cout << "  ------------------------" << endl << endl;
+
+        for (int i = 0; i < vectorAccount.size(); i++)
+        {
+            cout << "Account : " << i + 1 << endl;
+            cout << "Account Number : " << vectorAccount[i].numberAccount << endl;
+            cout << "First Name : " << vectorAccount[i].firstName << endl;
+            cout << "Last Name : " << vectorAccount[i].lastName << endl;
+            cout << "Age : " << vectorAccount[i].age << endl;
+            cout << "Type Account : " << vectorAccount[i].typeAccount << endl;
+            cout << "Account Balance : " << vectorAccount[i].firstDeposit << endl << endl;
+        }
+    }
+
+    void WithdrawMoney()
+    {
+        if (vectorAccount.size() == 0)
+        {
+            cout << "No Account Created." << endl << endl;
+                return;
+        }
+
+        int numberAccount;
+        int amount;
+        
+        cout << "Account Number To Withdraw : ";
+        cin >> numberAccount;
+        cin.clear();
+
+        cout << "Amount To Deposit : ";
+        cin >> amount;
+        cin.clear();
+
+        for (int i = 0; i < vectorAccount.size(); i++)
+        {
+            if (vectorAccount[i].numberAccount == numberAccount)
+            {
+                vectorAccount[i].firstDeposit = vectorAccount[i].firstDeposit - amount;
+            }
+            cout << endl << endl;
+        }
+
+        cout << "Withdrawal Resquest Succesful!";
+        cout << endl << endl;
+    }
 };
+
 int main()
 {
-    Bank b;
-    Account acc;
-    int choice;
-    string fname, lname;
-    long accountNumber;
-    float balance;
-    float amount;
-    cout << "***Banking System***" << endl;
+
+    int optionChoice = 0;
+    Bank theBank;
+
+    theBank.showMenu();
+    cout << endl << endl << "  Please Choose An Option : " << endl << endl << endl;
+    
     do
     {
-        cout << "\n\tSelect one option below ";
-        cout << "\n\t1 Open an Account";
-        cout << "\n\t2 Balance Enquiry";
-        cout << "\n\t3 Deposit";
-        cout << "\n\t4 Withdrawal";
-        cout << "\n\t5 Close an Account";
-        cout << "\n\t6 Show All Accounts";
-        cout << "\n\t7 Quit";
-        cout << "\nEnter your choice: ";
-        cin >> choice;
-        switch (choice)
+        cin >> optionChoice;
+
+        switch (optionChoice)
         {
         case 1:
-            cout << "Enter First Name: ";
-            cin >> fname;
-            cout << "Enter Last Name: ";
-            cin >> lname;
-            cout << "Enter initial Balance: ";
-            cin >> balance;
-            acc = b.OpenAccount(fname, lname, balance);
-            cout << endl
-                 << "Congratulations Account is Created" << endl;
-            cout << acc;
+            theBank.openAccount();
             break;
         case 2:
-            cout << "Enter Account Number:";
-            cin >> accountNumber;
-            acc = b.BalanceEnquiry(accountNumber);
-            cout << endl
-                 << "Your Account Details" << endl;
-            cout << acc;
-            break;
-        case 3:
-            cout << "Enter Account Number:";
-            cin >> accountNumber;
-            cout << "Enter Balance:";
-            cin >> amount;
-            acc = b.Deposit(accountNumber, amount);
-            cout << endl
-                 << "Amount is Deposited" << endl;
-            cout << acc;
+            theBank.depositMoney();
             break;
         case 4:
-            cout << "Enter Account Number:";
-            cin >> accountNumber;
-            cout << "Enter Balance:";
-            cin >> amount;
-            acc = b.Withdraw(accountNumber, amount);
-            cout << endl
-                 << "Amount Withdrawn" << endl;
-            cout << acc;
+            theBank.displayAccount();
             break;
-        case 5:
-            cout << "Enter Account Number:";
-            cin >> accountNumber;
-            b.CloseAccount(accountNumber);
-            cout << endl
-                 << "Account is Closed" << endl;
-            cout << acc;
-        case 6:
-            b.ShowAllAccounts();
+        case 3:
+            theBank.WithdrawMoney();
             break;
-        case 7:
-            break;
-        default:
-            cout << "\nEnter correct choice";
-            exit(0);
         }
-    } while (choice != 7);
-    return 0;
-}
-Account::Account(string fname, string lname, float balance)
-{
-    NextAccountNumber++;
-    accountNumber = NextAccountNumber;
-    firstName = fname;
-    lastName = lname;
-    this->balance = balance;
-}
-void Account::Deposit(float amount)
-{
-    balance += amount;
-}
-void Account::Withdraw(float amount)
-{
-    if (balance - amount < MIN_BALANCE)
-        throw InsufficientFunds();
-    balance -= amount;
-}
-void Account::setLastAccountNumber(long accountNumber)
-{
-    NextAccountNumber = accountNumber;
-}
-long Account::getLastAccountNumber()
-{
-    return NextAccountNumber;
-}
-ofstream &operator<<(ofstream &ofs, Account &acc)
-{
-    ofs << acc.accountNumber << endl;
-    ofs << acc.firstName << endl;
-    ofs << acc.lastName << endl;
-    ofs << acc.balance << endl;
-    return ofs;
-}
-ifstream &operator>>(ifstream &ifs, Account &acc)
-{
-    ifs >> acc.accountNumber;
-    ifs >> acc.firstName;
-    ifs >> acc.lastName;
-    ifs >> acc.balance;
-    return ifs;
-}
-ostream &operator<<(ostream &os, Account &acc)
-{
-    os << "First Name:" << acc.getFirstName() << endl;
-    os << "Last Name:" << acc.getLastName() << endl;
-    os << "Account Number:" << acc.getAccNo() << endl;
-    os << "Balance:" << acc.getBalance() << endl;
-    return os;
-}
-Bank::Bank()
-{
-    Account account;
-    ifstream infile;
-    infile.open("Bank.data");
-    if (!infile)
-    {
-        //cout<<"Error in Opening! File Not Found!!"<<endl;
-        return;
-    }
-    while (!infile.eof())
-    {
-        infile >> account;
-        accounts.insert(pair<long, Account>(account.getAccNo(), account));
-    }
-    Account::setLastAccountNumber(account.getAccNo());
-    infile.close();
-}
-Account Bank::OpenAccount(string fname, string lname, float balance)
-{
-    ofstream outfile;
-    Account account(fname, lname, balance);
-    accounts.insert(pair<long, Account>(account.getAccNo(), account));
-    outfile.open("Bank.data", ios::trunc);
-    map<long, Account>::iterator itr;
-    for (itr = accounts.begin(); itr != accounts.end(); itr++)
-    {
-        outfile << itr->second;
-    }
-    outfile.close();
-    return account;
-}
-Account Bank::BalanceEnquiry(long accountNumber)
-{
-    map<long, Account>::iterator itr = accounts.find(accountNumber);
-    return itr->second;
-}
-Account Bank::Deposit(long accountNumber, float amount)
-{
-    map<long, Account>::iterator itr = accounts.find(accountNumber);
-    itr->second.Deposit(amount);
-    return itr->second;
-}
-Account Bank::Withdraw(long accountNumber, float amount)
-{
-    map<long, Account>::iterator itr = accounts.find(accountNumber);
-    itr->second.Withdraw(amount);
-    return itr->second;
-}
-void Bank::CloseAccount(long accountNumber)
-{
-    map<long, Account>::iterator itr = accounts.find(accountNumber);
-    cout << "Account Deleted" << itr->second;
-    accounts.erase(accountNumber);
-}
-void Bank::ShowAllAccounts()
-{
-    map<long, Account>::iterator itr;
-    for (itr = accounts.begin(); itr != accounts.end(); itr++)
-    {
-        cout << "Account " << itr->first << endl
-             << itr->second << endl;
-    }
-}
-Bank::~Bank()
-{
-    ofstream outfile;
-    outfile.open("Bank.data", ios::trunc);
-    map<long, Account>::iterator itr;
-    for (itr = accounts.begin(); itr != accounts.end(); itr++)
-    {
-        outfile << itr->second;
-    }
-    outfile.close();
+        theBank.showMenu();
+        cout << endl << endl << "  Please Choose An Option : " << endl << endl << endl;
+    } while (optionChoice != 5);
 }
