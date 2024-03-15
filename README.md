@@ -3,4 +3,4 @@
 
 * It includes features like withdrawing of money, checking their bank balance, recent transactions, and making deposits
 
-* This is implemented by using C++,OOPs concepts,and MySQL.
+* This is implemented by using C++,OOPs concepts.
